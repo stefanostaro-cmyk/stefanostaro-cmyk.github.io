@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portico in prospettiva centrale</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&display=swap">
+<style>
+/* Layout: tavola da disegno a tutta larghezza, sotto il pannello dei passaggi (elenco + spiegazione) */
+:root{
+  --paper:#f6f7f4; --sheet:#fffffe; --ink:#1d2a36; --ink-2:#5b6875; --rule:#cfd6dc;
+  --pp:#2f8f5b; --pd:#c8463b; --h:#8a4fb0; --arc:#d77a1c; --frame:#2c5d8f;
+  --fill-front:#c9dff0; --fill-side:#a9c9e4; --fill-top:#e3eef7; --fill-in:#7fa8cc;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0f1c2b; --sheet:#132538; --ink:#e6eef5; --ink-2:#9db0c2; --rule:#2a4159;
+  --pp:#5fd39a; --pd:#ff7b6e; --h:#c99cf0; --arc:#ffb25c; --frame:#7fb6ea;
+  --fill-front:#28507a; --fill-side:#1f4469; --fill-top:#33608d; --fill-in:#173653; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0f1c2b; --sheet:#132538; --ink:#e6eef5; --ink-2:#9db0c2; --rule:#2a4159;
+  --pp:#5fd39a; --pd:#ff7b6e; --h:#c99cf0; --arc:#ffb25c; --frame:#7fb6ea;
+  --fill-front:#28507a; --fill-side:#1f4469; --fill-top:#33608d; --fill-in:#173653; color-scheme:dark}
+.crumb{font-size:.9rem;color:var(--ink-2)}.crumb a{color:var(--frame)}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px;display:grid;gap:16px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px}
+h1{font-family:var(--display);font-weight:700;font-size:2rem;letter-spacing:.02em;margin:0;text-wrap:balance;text-transform:uppercase}
+.sub{font-family:var(--display);font-weight:500;color:var(--ink-2);letter-spacing:.08em;text-transform:uppercase;font-size:.95rem}
+.board{background:var(--sheet);border:1px solid var(--rule);border-radius:4px;overflow-x:auto}
+svg{display:block;width:100%;min-width:640px;height:auto}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font-family:var(--display);font-weight:600;font-size:1rem;letter-spacing:.06em;text-transform:uppercase;background:var(--sheet);color:var(--ink);border:1px solid var(--rule);border-radius:3px;padding:6px 14px;cursor:pointer}
+button:hover{border-color:var(--frame)}
+button:focus-visible,input:focus-visible,li:focus-visible{outline:2px solid var(--frame);outline-offset:2px}
+button.primary{background:var(--frame);color:var(--sheet);border-color:var(--frame);min-width:96px}
+input[type=range]{flex:1 1 180px;accent-color:var(--frame)}
+label.tog{display:flex;gap:6px;align-items:center;font-size:.95rem;color:var(--ink-2)}
+.counter{font-family:var(--display);font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink-2);letter-spacing:.06em}
+.panel{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:24px}
+@media (max-width:720px){.panel{grid-template-columns:minmax(0,1fr)}}
+ol{margin:0;padding:0;list-style:none;display:grid;gap:2px;counter-reset:s}
+ol li{counter-increment:s;display:flex;gap:10px;padding:4px 8px;border-radius:3px;cursor:pointer;color:var(--ink-2);font-size:.95rem}
+ol li::before{content:counter(s,decimal-leading-zero);font-family:var(--display);font-weight:600;font-variant-numeric:tabular-nums;min-width:1.6em}
+ol li.done{color:var(--ink)}
+ol li.cur{background:var(--fill-top);color:var(--ink);font-weight:500}
+.cap{min-width:0}
+.cap h2{font-family:var(--display);font-weight:700;font-size:1.5rem;letter-spacing:.03em;margin:0 0 6px;text-transform:uppercase;text-wrap:balance}
+.cap p{margin:0 0 10px;max-width:65ch}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.85rem;color:var(--ink-2);margin-top:12px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:22px;height:0;border-top:2px solid}
+/* tratti */
+.ln{fill:none;stroke-linecap:round}
+.ref{stroke:var(--frame);stroke-width:.06}
+.cpp{stroke:var(--pp);stroke-width:.03}
+.cpd{stroke:var(--pd);stroke-width:.03}
+.ch{stroke:var(--h);stroke-width:.03}
+.ca{stroke:var(--arc);stroke-width:.035}
+.fin{stroke:var(--ink);stroke-width:.075;stroke-linejoin:round}
+.hid{stroke:var(--ink);stroke-width:.04;stroke-dasharray:.25 .18}
+.dot{fill:var(--sheet);stroke:var(--arc);stroke-width:.04}
+.dot.ref{stroke:var(--frame);fill:var(--frame)}
+.lbl{font-family:var(--display);font-weight:600;font-size:.55px;fill:var(--ink-2)}
+.lbl.big{font-size:.7px;fill:var(--ink)}
+.f-front{fill:var(--fill-front)} .f-side{fill:var(--fill-side)} .f-top{fill:var(--fill-top)} .f-in{fill:var(--fill-in)}
+.past.cons{opacity:.45}
+.nocons .cons{display:none}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw var(--dur,.6s) ease-out forwards;animation-delay:var(--d,0s)}
+.fade{opacity:0;animation:fade .5s ease-out forwards;animation-delay:var(--d,0s)}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fade{to{opacity:1}}
+@media (prefers-reduced-motion: reduce){.draw,.fade{animation:none;stroke-dashoffset:0;opacity:1}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <nav class="crumb"><a href="index.html">Architettura · Arte · Musica</a> › <a href="arte.html">Questioni d'Arte</a> › <a href="lezioni.html">Lezioni</a></nav>
+  <header>
+    <h1>Portico in prospettiva centrale</h1>
+    <div class="sub">Metodo dei punti di distanza · Disegno tecnico</div>
+  </header>
+
+  <div class="board" id="board"><svg id="svg" viewBox="-13.6 -11.9 41 13.8" role="img" aria-label="Costruzione del portico in prospettiva centrale"></svg></div>
+
+  <div class="controls">
+    <button id="prev" type="button" aria-label="Passaggio precedente">◀ Indietro</button>
+    <button id="play" class="primary" type="button">Avvia</button>
+    <button id="next" type="button" aria-label="Passaggio successivo">Avanti ▶</button>
+    <input id="slider" type="range" min="0" max="11" value="0" aria-label="Passaggio">
+    <span class="counter" id="counter">01 / 12</span>
+    <label class="tog"><input id="cons" type="checkbox" checked> Linee di costruzione</label>
+  </div>
+
+  <div class="panel">
+    <ol id="list"></ol>
+    <div class="cap" aria-live="polite">
+      <h2 id="capT"></h2>
+      <p id="capP"></p>
+      <div class="legend">
+        <span><i style="border-color:var(--pp)"></i>fughe verso PP</span>
+        <span><i style="border-color:var(--pd)"></i>diagonali verso PD</span>
+        <span><i style="border-color:var(--h)"></i>altezze e verticali</span>
+        <span><i style="border-color:var(--arc)"></i>costruzione degli archi</span>
+        <span><i style="border-color:var(--ink)"></i>disegno definitivo</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(()=>{
+const XPP=22,H=10,D=24,XPD=XPP-D;
+const X0=0,X1=1,X2=5,X3=6,T=1,ZS=3.5,ZTOP=6.5,RF=2,RL=1.5,PIER=1,K=Math.SQRT1_2;
+const CENTERS=[0,1,2,3].map(i=>T+RL+i*(2*RL+PIER));
+const PEND=CENTERS[3]+RL+PIER;
+const DEPTHS=[T];CENTERS.forEach(c=>DEPTHS.push(c-RL,c+RL));DEPTHS.push(PEND);DEPTHS.splice(0,DEPTHS.length,...[...new Set(DEPTHS)].sort((a,b)=>a-b));
+const P=(x,p,z)=>{const f=D/(D+p);return[XPP+(x-XPP)*f,-(H+(z-H)*f)]};
+const M=(x,z)=>[x,-z];
+const PP=M(XPP,H),PD=M(XPD,H);
+const NS="http://www.w3.org/2000/svg";
+const arcPts=(fn,n=24)=>Array.from({length:n+1},(_,i)=>fn(Math.PI*i/n));
+// linee viste e nascoste: ray casting dal punto verso l'osservatore attraverso il solido
+const cxF=(X1+X2)/2,EPS=1e-4,VIEW=[XPP,-D,H];
+function solid(x,p,z){
+  if(z<=EPS||z>=ZTOP-EPS)return false;
+  if(x>EPS&&x<X3-EPS&&p>EPS&&p<T-EPS){
+    if(x>X1-EPS&&x<X2+EPS&&(z<ZS||(x-cxF)**2+(z-ZS)**2<RF*RF+EPS))return false;return true}
+  if(x>X2+EPS&&x<X3-EPS&&p>=T-EPS&&p<PEND-EPS){
+    for(const c of CENTERS)if(p>c-RL-EPS&&p<c+RL+EPS&&(z<ZS||(p-c)**2+(z-ZS)**2<RL*RL+EPS))return false;return true}
+  return false}
+function visible([x,p,z]){
+  const dx=VIEW[0]-x,dp=VIEW[1]-p,dz=VIEW[2]-z;
+  const te=Math.min((X3-x)/dx,p/-dp,(ZTOP-z)/dz),ln=Math.hypot(dx,dp,dz);
+  for(let t=.02/ln,dt=.004/ln;t<te;t+=dt)if(solid(x+dx*t,p+dp*t,z+dz*t))return false;
+  return true}
+function EDGE(fn,n=60){
+  const pts=[],vis=[];for(let i=0;i<=n;i++){pts.push(fn(i/n));vis.push(visible(pts[i]))}
+  const out=(run,v)=>PL(run.map(q=>P(...q)),v?"fin":"hid");
+  let run=[pts[0]];
+  for(let i=1;i<=n;i++){if(vis[i]===vis[i-1])run.push(pts[i]);else{const m=fn((i-.5)/n);run.push(m);out(run,vis[i-1]);run=[m,pts[i]]}}
+  out(run,vis[n])}
+const SEG=(a,b)=>EDGE(s=>a.map((v,k)=>v+(b[k]-v)*s));
+const ARCX=(X,c)=>EDGE(s=>[X,c-RL*Math.cos(Math.PI*s),ZS+RL*Math.sin(Math.PI*s)],72);
+const ARCP=pd=>EDGE(s=>[cxF-RF*Math.cos(Math.PI*s),pd,ZS+RF*Math.sin(Math.PI*s)],72);
+
+const steps=[];let cur;
+const step=(t,p)=>{cur={t,p,els:[]};steps.push(cur)};
+const L=(a,b,c)=>cur.els.push({k:"path",d:`M${a}L${b}`,c});
+const PL=(pts,c,close)=>cur.els.push({k:"path",d:"M"+pts.map(q=>q.join(",")).join("L")+(close?"Z":""),c});
+const DOT=(q,c="dot",r=.13)=>cur.els.push({k:"circle",q,r,c});
+const TX=(s,q,c="lbl",anchor="middle")=>cur.els.push({k:"text",s,q,c,anchor});
+const FILL=(pts,c)=>cur.els.push({k:"fill",d:"M"+pts.map(q=>q.join(",")).join("L")+"Z",c});
+
+// 1
+step("Quadro, orizzonte e punti di fuga","Traccia la linea di terra LT e la linea d'orizzonte LO. Su LO fissa il punto principale PP, dove fuggono tutte le rette perpendicolari al quadro, e il punto di distanza PD, posto a sinistra di PP a una distanza d uguale alla distanza dell'osservatore dal quadro. Verso PD fuggono le rette orizzontali inclinate di 45°.");
+L(M(-13,0),M(26.5,0),"ref");L(M(-13,H),M(26.5,H),"ref");
+TX("LT",M(26.5,.3),"lbl big","end");TX("LO",M(26.5,H+.3),"lbl big","end");
+DOT(PP,"dot ref",.16);DOT(PD,"dot ref",.16);TX("PP",M(XPP,H+.45),"lbl big");TX("PD",M(XPD,H+.45),"lbl big");
+L(M(XPD,H+1.1),M(XPP,H+1.1),"ch");L(M(XPD,H+.85),M(XPD,H+1.35),"ch");L(M(XPP,H+.85),M(XPP,H+1.35),"ch");
+TX("d",M((XPD+XPP)/2,H+1.25),"lbl");
+
+// 2
+step("Arcata frontale in vera forma","L'arcata frontale appoggia sul quadro, quindi non subisce deformazioni prospettiche: si disegna in vera forma e vera grandezza. Segna sulla LT i punti 1, 2, 3, 4 dei piedritti, inscrivi la metà superiore dell'arco in un rettangolo e traccia l'arco con il compasso dal centro sull'imposta.");
+[[X0,"1"],[X1,"2"],[X2,"3"],[X3,"4"]].forEach(([x,s])=>TX(s,M(x,-.75)));
+const cx=(X1+X2)/2;
+L(M(X1,ZS),M(X2,ZS),"ca cons");L(M(X1,ZS+RF),M(X2,ZS+RF),"ca cons");L(M(X1,ZS),M(X1,ZS+RF),"ca cons");L(M(X2,ZS),M(X2,ZS+RF),"ca cons");
+L(M(cx,ZS),M(cx,ZS+RF),"ca cons");L(M(cx,ZS),M(X1,ZS+RF),"ca cons");L(M(cx,ZS),M(X2,ZS+RF),"ca cons");DOT(M(cx,ZS),"dot cons");
+PL([M(X1,0),M(X0,0),M(X0,ZTOP),M(X3,ZTOP),M(X3,0),M(X2,0)],"fin");
+L(M(X1,0),M(X1,ZS),"fin");L(M(X2,0),M(X2,ZS),"fin");
+PL(arcPts(t=>M(cx-RF*Math.cos(t),ZS+RF*Math.sin(t))),"fin");
+
+// 3
+step("Rette di profondità verso PP","Unisci a PP i punti 1, 2, 3 e 4. Sono le tracce a terra degli spigoli perpendicolari al quadro: in particolare 4–PP è la base della faccia esterna delle arcate laterali e 3–PP quella della faccia interna.");
+[X0,X1,X2,X3].forEach(x=>L(M(x,0),PP,"cpp cons"));
+
+// 4
+step("Profondità con il punto di distanza","Riporta sulla LT, a destra di 4, le profondità dei pilastri lette in pianta (ribaltate a 45°): punti 5–13. Unisci ciascun punto a PD. Dove queste rette incontrano 4–PP trovi in prospettiva gli spigoli a terra dei pilastri.");
+DEPTHS.forEach((p,i)=>{L(M(X3+p,0),PD,"cpd cons");TX(String(5+i),M(X3+p,-.75))});
+DEPTHS.forEach(p=>DOT(P(X3,p,0),"dot cons",.09));
+
+// 5
+step("Pilastri e piano interno","Dalle intersezioni su 4–PP traccia le parallele alla LT fino a 3–PP: ottieni gli stessi spigoli sul piano interno, che dà lo spessore delle arcate. Da tutti i punti innalza le verticali dei pilastri.");
+DEPTHS.forEach(p=>{L(P(X3,p,0),P(X2,p,0),"ch cons");L(P(X3,p,0),P(X3,p,ZTOP),"ch cons");L(P(X2,p,0),P(X2,p,ZTOP),"ch cons")});
+L(P(X1,T,0),P(X3,T,0),"ch cons");
+
+// 6
+step("Linee di misura delle altezze","Le altezze si misurano in vera grandezza solo sul quadro. Lo spigolo verticale per 4 (e la verticale per 3) fa da linea di misura: riporta l'imposta degli archi, la chiave e la sommità della trabeazione e uniscile a PP.");
+[[ZS,"imposta"],[ZS+RL,"chiave"],[ZTOP,"trabeazione"]].forEach(([z,s])=>{L(M(X3,z),PP,"ch cons");L(M(X2,z),PP,"ch cons");TX(s,M(X0-.25,z+.12),"lbl cons","end")});
+
+// 7
+step("Mezzo quadrato ausiliario","A lato disegna in vera forma la metà dell'arco laterale inscritta in un mezzo quadrato e traccia le diagonali dei due quadrati. La diagonale taglia l'arco nel punto a 45°: la sua altezza (h 45°) va riportata orizzontalmente sulla linea di misura e da lì mandata a PP.");
+const ax0=-11.2,ax1=ax0+2*RL,acx=(ax0+ax1)/2;
+PL([M(ax0,ZS),M(ax1,ZS),M(ax1,ZS+RL),M(ax0,ZS+RL)],"ca cons",true);
+L(M(acx,ZS),M(acx,ZS+RL),"ca cons");L(M(acx,ZS),M(ax0,ZS+RL),"ca cons");L(M(acx,ZS),M(ax1,ZS+RL),"ca cons");
+PL(arcPts(t=>M(acx-RL*Math.cos(t),ZS+RL*Math.sin(t))),"ca cons");
+[-1,1].forEach(s=>DOT(M(acx+s*K*RL,ZS+K*RL),"dot cons"));
+[ZS,ZS+K*RL,ZS+RL].forEach(z=>L(M(ax1,z),M(X0,z),"ca cons"));
+L(M(X3,ZS+K*RL),PP,"ch cons");L(M(X2,ZS+K*RL),PP,"ch cons");
+TX("h 45°",M(X0-.25,ZS+K*RL+.12),"lbl cons","end");
+
+// 8
+step("Punti medi delle campate","Sulla LT individua il punto medio di ogni campata (m) e uniscilo a PD. Dall'intersezione con 4–PP innalza la verticale: sulla retta della chiave trovi il punto più alto di ogni arco.");
+CENTERS.forEach(c=>{L(M(X3+c,0),PD,"cpd cons");TX("m",M(X3+c,-.75),"lbl cons");DOT(P(X3,c,0),"dot cons",.09);
+  L(P(X3,c,0),P(X3,c,ZS+RL),"ch cons");L(P(X3,c,0),P(X2,c,0),"ch cons");L(P(X2,c,0),P(X2,c,ZS+RL),"ch cons")});
+
+// 9
+step("Mezzi quadrati in prospettiva","Ogni arco laterale sta in un mezzo quadrato in prospettiva, chiuso dai piedritti, dall'imposta e dalla retta della chiave. Traccia le diagonali dei due quadrati: incrociandole con la retta h 45° ottieni i due punti intermedi. Con imposte e chiave sono cinque punti per arco.");
+[X3,X2].forEach(X=>CENTERS.forEach(c=>{const a=c-RL,b=c+RL,z=ZS;
+  L(P(X,c,z),P(X,a,z+RL),"ca cons");L(P(X,c,z),P(X,b,z+RL),"ca cons");
+  [[a,z],[c-K*RL,z+K*RL],[c,z+RL],[c+K*RL,z+K*RL],[b,z]].forEach(([p,zz])=>DOT(P(X,p,zz),"dot cons",.09))}));
+
+// 10
+step("Archi laterali con il curvilineo","Unisci i cinque punti di ogni arco con il curvilineo: in prospettiva le semicirconferenze diventano archi di ellisse, sempre più stretti allontanandosi. Ripassa i piedritti e lo spigolo superiore della trabeazione sul piano esterno.");
+CENTERS.forEach(c=>{ARCX(X3,c);SEG([X3,c-RL,0],[X3,c-RL,ZS]);SEG([X3,c+RL,0],[X3,c+RL,ZS]);SEG([X3,c+RL,0],[X3,c+RL+PIER,0])});
+SEG([X3,0,0],[X3,T,0]);SEG([X3,0,ZTOP],[X3,PEND,ZTOP]);SEG([X3,PEND,0],[X3,PEND,ZTOP]);
+
+// 11
+step("Spessore sul piano posteriore","Ripeti gli archi sul piano interno (3–PP) e uniscili alle arcate esterne. Completa la faccia superiore della trabeazione e riporta l'arco frontale sulla sua faccia posteriore, alla profondità dello spessore. Restano continui solo i tratti che si vedono attraverso le aperture: la parte destra degli archi interni e i montanti in fondo alle campate. I montanti vicini, la parte sinistra degli archi interni e la metà destra dell'arco posteriore stanno dietro i pieni e si tratteggiano.");
+CENTERS.forEach(c=>{ARCX(X2,c);SEG([X2,c-RL,0],[X2,c-RL,ZS]);SEG([X2,c+RL,0],[X2,c+RL,ZS]);SEG([X2,c+RL,0],[X2,c+RL+PIER,0]);
+  SEG([X2,c-RL,0],[X3,c-RL,0]);SEG([X2,c+RL,0],[X3,c+RL,0])});
+SEG([X0,0,ZTOP],[X0,T,ZTOP]);SEG([X0,T,ZTOP],[X2,T,ZTOP]);SEG([X2,T,ZTOP],[X2,PEND,ZTOP]);SEG([X2,PEND,ZTOP],[X3,PEND,ZTOP]);
+SEG([X2,PEND,0],[X3,PEND,0]);SEG([X2,PEND,0],[X2,PEND,ZTOP]);
+ARCP(T);SEG([X1,0,0],[X1,T,0]);SEG([X2,0,0],[X2,T,0]);SEG([X1,T,0],[X1,T,ZS]);SEG([X2,T,0],[X2,T,ZS]);SEG([X0,T,0],[X0,T,ZTOP]);
+
+// 12
+step("Tavola completata","Il portico è finito. Le campiture distinguono la faccia frontale, la faccia laterale, la sommità e le superfici in ombra viste attraverso gli archi. Togli la spunta \"Linee di costruzione\" per vedere solo il disegno definitivo.");
+// superfici interne (prima, così le facce le coprono)
+FILL([P(X1,0,0),P(X1,T,0),P(X1,T,ZS),P(X1,0,ZS)],"f-in");
+FILL(arcPts(t=>P(cx-RF*Math.cos(t),0,ZS+RF*Math.sin(t))).concat(arcPts(t=>P(cx-RF*Math.cos(t),T,ZS+RF*Math.sin(t))).reverse()),"f-in");
+CENTERS.forEach(c=>{
+  FILL(arcPts(t=>P(X3,c-RL*Math.cos(t),ZS+RL*Math.sin(t))).concat(arcPts(t=>P(X2,c-RL*Math.cos(t),ZS+RL*Math.sin(t))).reverse()),"f-in");
+  FILL([P(X2,c+RL,0),P(X3,c+RL,0),P(X3,c+RL,ZS),P(X2,c+RL,ZS)],"f-in")});
+FILL([P(X0,0,ZTOP),P(X3,0,ZTOP),P(X3,PEND,ZTOP),P(X2,PEND,ZTOP),P(X2,T,ZTOP),P(X0,T,ZTOP)],"f-top");
+let side=[P(X3,0,0)];
+CENTERS.forEach(c=>{side.push(P(X3,c-RL,0));side=side.concat(arcPts(t=>P(X3,c-RL*Math.cos(t),ZS+RL*Math.sin(t))));side.push(P(X3,c+RL,0))});
+side.push(P(X3,PEND,0),P(X3,PEND,ZTOP),P(X3,0,ZTOP));FILL(side,"f-side");
+FILL([M(X0,0),M(X1,0),M(X1,ZS)].concat(arcPts(t=>M(cx-RF*Math.cos(t),ZS+RF*Math.sin(t))),[M(X2,0),M(X3,0),M(X3,ZTOP),M(X0,ZTOP)]),"f-front");
+
+// ---------------- rendering ----------------
+const svg=document.getElementById("svg");
+const gFill=document.createElementNS(NS,"g"),gLine=document.createElementNS(NS,"g");svg.append(gFill,gLine);
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function make(e,state,delay){
+  let n;
+  if(e.k==="circle"){n=document.createElementNS(NS,"circle");n.setAttribute("cx",e.q[0]);n.setAttribute("cy",e.q[1]);n.setAttribute("r",e.r)}
+  else if(e.k==="text"){n=document.createElementNS(NS,"text");n.setAttribute("x",e.q[0]);n.setAttribute("y",e.q[1]);n.setAttribute("text-anchor",e.anchor);n.textContent=e.s}
+  else{n=document.createElementNS(NS,"path");n.setAttribute("d",e.d);if(e.k==="path"){n.classList.add("ln");n.setAttribute("pathLength","1")}}
+  e.c.split(" ").forEach(c=>c&&n.classList.add(c));
+  if(e.k==="path"&&!e.c.includes("cons")&&!e.c.includes("fin")&&!e.c.includes("hid")&&!e.c.includes("ref"))n.classList.add("cons");
+  if(e.k==="path"&&/cpp|cpd|ch|ca/.test(e.c))n.classList.add("cons");
+  if(state==="past")n.classList.add("past");
+  if(state==="anim"&&!reduce){
+    if(e.k==="path"&&!e.c.includes("hid"))n.classList.add("draw");else n.classList.add("fade");
+    n.style.setProperty("--d",delay+"s")}
+  (e.k==="fill"?gFill:gLine).appendChild(n);
+}
+const list=document.getElementById("list");
+steps.forEach((s,i)=>{const li=document.createElement("li");li.textContent=s.t;li.tabIndex=0;
+  li.addEventListener("click",()=>{stop();go(i,true)});li.addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();stop();go(i,true)}});list.appendChild(li)});
+const slider=document.getElementById("slider"),counter=document.getElementById("counter");
+slider.max=steps.length-1;
+let idx=0,timer=null,playing=false;
+const pad=n=>String(n).padStart(2,"0");
+function stepTime(i){const n=steps[i].els.length;return reduce?0:Math.min(3.2,n*.07)+.6}
+function go(i,animate){
+  idx=Math.max(0,Math.min(steps.length-1,i));
+  gFill.replaceChildren();gLine.replaceChildren();
+  steps.forEach((s,k)=>{if(k>idx)return;const anim=animate&&k===idx;const n=s.els.length;
+    s.els.forEach((e,j)=>make(e,k<idx?"past":(anim?"anim":"now"),anim?Math.min(3.2,n*.07)*j/Math.max(1,n):0))});
+  [...list.children].forEach((li,k)=>{li.classList.toggle("cur",k===idx);li.classList.toggle("done",k<idx)});
+  slider.value=idx;counter.textContent=pad(idx+1)+" / "+pad(steps.length);
+  document.getElementById("capT").textContent=steps[idx].t;document.getElementById("capP").textContent=steps[idx].p;
+}
+const playBtn=document.getElementById("play");
+function stop(){playing=false;clearTimeout(timer);playBtn.textContent="Avvia"}
+function tick(){timer=setTimeout(()=>{if(idx<steps.length-1){go(idx+1,true);tick()}else stop()},(stepTime(idx)+1.6)*1000)}
+playBtn.addEventListener("click",()=>{if(playing){stop();return}
+  playing=true;playBtn.textContent="Pausa";
+  if(idx>=steps.length-1)go(0,true);else go(idx,true);tick()});
+document.getElementById("next").addEventListener("click",()=>{stop();go(idx+1,true)});
+document.getElementById("prev").addEventListener("click",()=>{stop();go(idx-1,false)});
+slider.addEventListener("input",()=>{stop();go(+slider.value,false)});
+document.getElementById("cons").addEventListener("change",ev=>svg.classList.toggle("nocons",!ev.target.checked));
+go(steps.length-1,false); // apre sulla tavola completata
+})();
+</script>
+
+</body>
+</html>
